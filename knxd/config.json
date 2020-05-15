@@ -1,0 +1,39 @@
+{
+  "name": "knxd",
+  "version": "0.3",
+  "slug": "knxd",
+  "description": "KNX router/gateway for accessing the KNX bus by FT1.2, TPUART or USB bus adapters",
+  "arch": ["armhf", "armv7", "aarch64", "amd64", "i386"],
+  "url": "https://github.com/aschamberger/hassio-addons/",
+  "startup": "before",
+  "boot": "auto",
+  "ports": {
+    "6720/tcp": 6720,
+    "3671/udp": 3671
+  },
+  "ports_description": {
+    "6720/tcp": "standard KNXnet/IP port",
+    "3671/udp": "knxd tcp interface port"
+  },
+  "auto_uart": true,
+  "options": {
+    "knxd_address": "1.1.1",
+    "client_address_start": "1.1.2",
+    "client_address_length": 5,
+    "driver": "ft12cemi",
+	"device": "/dev/ttyAMA0",
+	"tcp": false,
+    "debug": false,
+	"trace_mask": "0xffe"
+  },
+  "schema": {
+    "knxd_address": "str",
+    "client_address_start": "str",
+    "client_address_length": "int",
+    "driver": "str",
+	"device": "str",
+	"tcp": "bool?",
+    "debug": "bool?",
+	"trace_mask": "str?"
+  }
+}
