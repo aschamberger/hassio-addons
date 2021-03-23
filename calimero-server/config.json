@@ -1,0 +1,34 @@
+{
+  "name": "Calimero KNXnet/IP Server",
+  "version": "1.1.2",
+  "slug": "calimero_server",
+  "description": "A KNXnet/IP server for running your own KNXnet/IP server in software accessing the KNX bus by FT1.2 or TPUART bus adapters",
+  "arch": ["aarch64"],
+  "url": "https://github.com/aschamberger/hassio-addons/",
+  "startup": "services",
+  "boot": "auto",
+  "ports": {
+    "3671/udp": 3671
+  },
+  "ports_description": {
+    "3671/udp": "standard KNXnet/IP port"
+  },
+  "uart": true,
+  "options": {
+    "knx_address": "1.1.0",
+    "client_address_start": "1.1.101",
+    "client_address_count": 5,
+    "interface_type": "ft12-cemi",
+	"device": "/dev/ttyAMA0",
+	"routing": true
+  },
+  "schema": {
+    "knx_address": "str",
+    "client_address_start": "str",
+    "client_address_count": "int",
+    "interface_type": "list(ft12-cemi|tpuart)",
+	"device": "device(subsystem=tty)",
+	"routing": "bool",
+    "loglevel": "list(trace|debug|info|warn|error|off)?"
+  }
+}
