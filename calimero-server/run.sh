@@ -18,16 +18,16 @@ fi
 
 CONFIG_XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <!-- Calimero server settings (required for startup) -->
-<knxServer name=\"knx-server\" friendlyName=\"Calimero KNXnet/IP Server (on Home Assistant OS)\">
+<knxServer name=\"knx-server\" friendlyName=\"Hass OS KNXnet/IP Server\">
 	<!-- KNXnet/IP search & discovery -->
 	<discovery listenNetIf=\"all\" outgoingNetIf=\"all\" activate=\"true\" />
 	<!-- Provides the KNXnet/IP-side configuration for access to one KNX subnet -->
 	<serviceContainer activate=\"true\" routing=\"$ROUTING\" networkMonitoring=\"true\" 
-		udpPort=\"3671\" listenNetIf=\"any\">
+		udpPort=\"3671\" listenNetIf=\"eth0\">
 		<knxAddress type=\"individual\">$KNX_ADDRESS</knxAddress>"
 if [ "$INTERFACE_TYPE" = "ft12-cemi" ]; then
 CONFIG_XML="$CONFIG_XML
-		<knxSubnet type=\"ft12-cemi\" medium=\"tp1\">$DEVICE</knxSubnet>"
+		<knxSubnet type=\"ft12-cemi\" medium=\"tp1\" knxAddress=\"0\">$DEVICE</knxSubnet>"
 fi
 if [ "$INTERFACE_TYPE" = "tpuart" ]; then
 CONFIG_XML="$CONFIG_XML
@@ -59,4 +59,4 @@ echo "$CONFIG_XML" > /etc/server-config.xml
 
 cat /etc/server-config.xml
 
-exec /opt/jdk/bin/java -cp "/opt/calimero/*"$ADD_LOGGING tuwien.auto.calimero.server.Launcher /etc/server-config.xml
+exec /opt/jdk/bin/java -cp "/opt/calimero/*"$ADD_LOGGING tuwien.auto.calimero.server.Launcher --no-stdin /etc/server-config.xml

@@ -19,13 +19,9 @@ RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
 # download jars and recompile serial library for Alpine musl
 RUN mkdir -p /opt/calimero/ \
     && cd /opt/calimero/ \
-    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-server/2.5-M1/calimero-server-2.5-M1.jar \
-    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-core/2.5-M1/calimero-core-2.5-M1.jar \
-    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-device/2.5-M1/calimero-device-2.5-M1.jar \
-    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-rxtx/2.5-M1/calimero-rxtx-2.5-M1.jar \
-    && wget https://github.com/NeuronRobotics/nrjavaserial/releases/download/5.2.1/nrjavaserial-5.2.1.jar \
     && wget https://oss.sonatype.org/service/local/repositories/releases/content/org/slf4j/slf4j-api/1.8.0-beta4/slf4j-api-1.8.0-beta4.jar \
     && wget https://oss.sonatype.org/service/local/repositories/releases/content/org/slf4j/slf4j-simple/1.8.0-beta4/slf4j-simple-1.8.0-beta4.jar \
+    && wget https://github.com/NeuronRobotics/nrjavaserial/releases/download/5.2.1/nrjavaserial-5.2.1.jar \
     && wget https://github.com/NeuronRobotics/nrjavaserial/archive/refs/tags/5.2.1.zip -O nrjavaserial.zip \
     && unzip nrjavaserial.zip \
     && cd nrjavaserial-5.2.1/src/main/c \
@@ -37,7 +33,14 @@ RUN mkdir -p /opt/calimero/ \
     && g++ -shared -fPIC -nostdlib -o"/opt/calimero/native/linux/ARM_64/libNRJavaSerialv8.so" build/fixup.o build/fuserImp.o build/SerialImp.o \
     && cd ../../../../ \
     && rm -R nrjavaserial-5.2.1 \
-    && zip -u nrjavaserial-5.2.1.jar native/linux/ARM_64/libNRJavaSerialv8.so
+    && zip -u nrjavaserial-5.2.1.jar native/linux/ARM_64/libNRJavaSerialv8.so \
+    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-rxtx/2.5-M1/calimero-rxtx-2.5-M1.jar \
+#    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-core/2.5-M1/calimero-core-2.5-M1.jar \
+#    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-device/2.5-M1/calimero-device-2.5-M1.jar \
+#    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-server/2.5-M1/calimero-server-2.5-M1.jar
+    && wget https://gist.github.com/bmalinowsky/3269cdab752fcff2d7c1e02c68f11084/raw/5388aa459398c4907c3edc7d0103ad2c0c49f7c8/calimero-core-2.5-M1.jar \
+    && wget https://gist.github.com/bmalinowsky/3269cdab752fcff2d7c1e02c68f11084/raw/5388aa459398c4907c3edc7d0103ad2c0c49f7c8/calimero-device-2.5-M1.jar \
+    && wget https://gist.github.com/bmalinowsky/3269cdab752fcff2d7c1e02c68f11084/raw/5388aa459398c4907c3edc7d0103ad2c0c49f7c8/calimero-server-2.5-M1.jar
 
 ARG BUILD_FROM
 FROM $BUILD_FROM
