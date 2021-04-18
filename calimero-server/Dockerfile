@@ -38,10 +38,12 @@ RUN mkdir -p /opt/calimero/ \
 #    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-core/2.5-M1/calimero-core-2.5-M1.jar \
 #    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-device/2.5-M1/calimero-device-2.5-M1.jar \
 #    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-server/2.5-M1/calimero-server-2.5-M1.jar
-    && wget https://gist.github.com/bmalinowsky/3269cdab752fcff2d7c1e02c68f11084/raw/5388aa459398c4907c3edc7d0103ad2c0c49f7c8/calimero-core-2.5-M1.jar \
+#    && wget https://gist.github.com/bmalinowsky/3269cdab752fcff2d7c1e02c68f11084/raw/5388aa459398c4907c3edc7d0103ad2c0c49f7c8/calimero-core-2.5-M1.jar \
     && wget https://gist.github.com/bmalinowsky/3269cdab752fcff2d7c1e02c68f11084/raw/5388aa459398c4907c3edc7d0103ad2c0c49f7c8/calimero-device-2.5-M1.jar \
-    && wget https://gist.github.com/bmalinowsky/3269cdab752fcff2d7c1e02c68f11084/raw/5388aa459398c4907c3edc7d0103ad2c0c49f7c8/calimero-server-2.5-M1.jar
-
+#    && wget https://gist.github.com/bmalinowsky/3269cdab752fcff2d7c1e02c68f11084/raw/5388aa459398c4907c3edc7d0103ad2c0c49f7c8/calimero-server-2.5-M1.jar
+    && wget -O calimero-core-2.5-M1.jar https://github.com/calimero-project/calimero-server/files/6331647/calimero-core-2.5-M1.zip \
+    && wget -O calimero-server-2.5-M1.jar https://github.com/calimero-project/calimero-server/files/6327972/calimero-server-2.5-M1.zip 
+    
 ARG BUILD_FROM
 FROM $BUILD_FROM
 

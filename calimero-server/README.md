@@ -1,8 +1,8 @@
 # Home Assistant Add-On: Calimero Server
 
-A KNXnet/IP server for running your own KNXnet/IP server in software. This add-on can be used for accessing the KNX bus via FT1.2 or TPUART serial adapters. 
+A KNXnet/IP server (https://github.com/calimero-project/calimero-server) for running your own KNXnet/IP server in software. This add-on can be used for accessing the KNX bus via FT1.2 or TPUART serial adapters. 
 
-The minimum required runtime environment is Java SE 11 (java.base) and a custom Java runtime is created via jlink. Java 11 is only available for AArch64 on ARM.
+The minimum required runtime environment is Java SE 11 (java.base). A custom Java runtime is created via jlink. Note: Java 11 is only available for AArch64 on ARM. nrjavaserial needs to be compiled for Alpine with musl, the release jar is updated with this binary.
 
 ## Add-On Configuration
 
@@ -30,6 +30,8 @@ loglevel: info
 `device` uart device name
 
 `routing` if true activate KNX IP routing, if false routing is disabled
+
+`knx_source_override` if true activate static default source address assignment (required for devices that don't like the source address to be changed or set, e.g. for the Weinzierl kBerry)
 
 `loglevel` is optional and can be one of the slf4j log levels. It logs everything to standard output. 
 

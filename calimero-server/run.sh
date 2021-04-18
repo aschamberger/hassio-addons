@@ -9,7 +9,13 @@ CLIENT_ADDRESS_COUNT=$(jq --raw-output ".client_address_count" $CONFIG_PATH)
 INTERFACE_TYPE=$(jq --raw-output ".interface_type" $CONFIG_PATH)
 DEVICE=$(jq --raw-output ".device" $CONFIG_PATH)
 ROUTING=$(jq --raw-output ".routing" $CONFIG_PATH)
+KNX_SOURCE_OVERRIDE=$(jq --raw-output ".knx_source_override" $CONFIG_PATH)
 LOGLEVEL=$(jq --raw-output ".loglevel" $CONFIG_PATH)
+
+ADD_KNX_SOURCE_OVERRIDE=""
+if [ -n "$KNX_SOURCE_OVERRIDE" ]; then
+    ADD_KNX_SOURCE_OVERRIDE=" knxAddress=\"0\""
+fi
 
 ADD_LOGGING=""
 if [ -n "$LOGLEVEL" ]; then
@@ -27,7 +33,7 @@ CONFIG_XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 		<knxAddress type=\"individual\">$KNX_ADDRESS</knxAddress>"
 if [ "$INTERFACE_TYPE" = "ft12-cemi" ]; then
 CONFIG_XML="$CONFIG_XML
-		<knxSubnet type=\"ft12-cemi\" medium=\"tp1\" knxAddress=\"0\">$DEVICE</knxSubnet>"
+		<knxSubnet type=\"ft12-cemi\" medium=\"tp1\"$ADD_KNX_SOURCE_OVERRIDE>$DEVICE</knxSubnet>"
 fi
 if [ "$INTERFACE_TYPE" = "tpuart" ]; then
 CONFIG_XML="$CONFIG_XML
