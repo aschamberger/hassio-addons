@@ -37,6 +37,10 @@ RUN cd /opt/calimero/ \
     && zip -u nrjavaserial-5.2.1.jar native/linux/ARM_64/libNRJavaSerialv8.so \
     && rm -R native
 RUN cd /opt/calimero/ \
+    && wget https://oss.sonatype.org/service/local/repositories/releases/content/org/usb4java/usb4java-javax/1.3.0/usb4java-javax-1.3.0.jar \
+    && wget https://oss.sonatype.org/service/local/repositories/releases/content/org/usb4java/usb4java/1.3.0/usb4java-1.3.0.jar \
+    && wget https://repo1.maven.org/maven2/javax/usb/usb-api/1.0.2/usb-api-1.0.2.jar \
+    && wget https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar \
     && wget https://github.com/usb4java/libusb4java/archive/refs/tags/libusb4java-1.3.0.zip -O libusb4java.zip \
     && unzip libusb4java.zip \
     && cd libusb4java-libusb4java-1.3.0 \
