@@ -1,8 +1,8 @@
 # Home Assistant Add-On: Calimero Server
 
-A KNXnet/IP server (https://github.com/calimero-project/calimero-server) for running your own KNXnet/IP server in software. This add-on can be used for accessing the KNX bus via FT1.2 or TPUART serial adapters. 
+A KNXnet/IP server (https://github.com/calimero-project/calimero-server) for running your own KNXnet/IP server in software. This add-on can be used for accessing the KNX bus via FT1.2/TPUART serial adapters or USB KNX devices. 
 
-The minimum required runtime environment is Java SE 11 (java.base). A custom Java runtime is created via jlink. Note: Java 11 is only available for AArch64 on ARM. nrjavaserial needs to be compiled for Alpine with musl, the release jar is updated with this binary.
+The minimum required runtime environment is Java SE 11 (java.base). A custom Java runtime is created via jlink. Note: Java 11 is only available for AArch64 on ARM. nrjavaserial+usb4java needs to be compiled for Alpine with musl, the release jar is updated with this binary.
 
 ## Add-On Configuration
 
@@ -14,7 +14,7 @@ client_address_count: 5
 interface_type: ft12-cemi
 device: /dev/ttyAMA0
 routing: true
-loglevel: info
+knx_source_override: true
 ```
 
 `knx_address` of the service container, will be visible in e.g. ETS-tool. If routing is activated, requires a coupler/backbone address (x.y.0 or x.0.0).
@@ -26,8 +26,11 @@ loglevel: info
 `interface_type` can be one of:
 * `ft12-cemi` for e.g. the [KNX BAOS Module 838 kBerry](https://www.weinzierl.de/index.php/en/all-knx/knx-module-en/knx-baos-module-838-en) 
 * `tpuart` for e.g. [TPUART USB Modul](http://shop.busware.de/product_info.php/products_id/59)
+* `usb`
 
-`device` uart device name
+`serial_device` uart device name
+
+`usb_device` specify the vendorId:productId or vendor name, e.g. siemens; if USB device identifier is left empty, the first found KNX USB device is used
 
 `routing` if true activate KNX IP routing, if false routing is disabled
 
@@ -62,4 +65,4 @@ The correct device for the serial port is '/dev/ttyS1' (the device is pin compat
 ## Links
 
 * Enable SSH access to the host: https://developers.home-assistant.io/docs/operating-system/debugging/
-* USB could be added too, however usb4java also needs to be compiled for musl on Alpine: http://usb4java.org/nativelibs.html
+* usb4java also needs to be compiled for musl on Alpine: http://usb4java.org/nativelibs.html

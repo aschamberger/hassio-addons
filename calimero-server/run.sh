@@ -7,10 +7,27 @@ KNX_ADDRESS=$(jq --raw-output ".knx_address" $CONFIG_PATH)
 CLIENT_ADDRESS_START=$(jq --raw-output ".client_address_start" $CONFIG_PATH)
 CLIENT_ADDRESS_COUNT=$(jq --raw-output ".client_address_count" $CONFIG_PATH)
 INTERFACE_TYPE=$(jq --raw-output ".interface_type" $CONFIG_PATH)
-DEVICE=$(jq --raw-output ".device" $CONFIG_PATH)
+SERIAL_DEVICE=$(jq --raw-output ".serial_device" $CONFIG_PATH)
+USB_DEVICE=$(jq --raw-output ".usb_device" $CONFIG_PATH)
 ROUTING=$(jq --raw-output ".routing" $CONFIG_PATH)
 KNX_SOURCE_OVERRIDE=$(jq --raw-output ".knx_source_override" $CONFIG_PATH)
 LOGLEVEL=$(jq --raw-output ".loglevel" $CONFIG_PATH)
+
+# try to handle missing serial device config
+if [ -z "$SERIAL_DEVICE" ]; then
+    echo "serial device config missing!\n"
+    # Raspberry Pi 3 / 4
+    if [ -e "/dev/ttyAMA0" ]; then
+        SERIAL_DEVICE="/dev/ttyAMA0"
+    # ODROID C4 / Asus Tinker Board S
+    elif [ -e "/dev/ttyS1" ]; then
+        SERIAL_DEVICE=="/dev/ttyS1"
+    else
+        echo "fix config an restart!\n"
+        exit
+    fi
+    echo "trying with: $SERIAL_DEVICE\n"
+fi
 
 ADD_KNX_SOURCE_OVERRIDE=""
 if [ -n "$KNX_SOURCE_OVERRIDE" ]; then
@@ -33,11 +50,15 @@ CONFIG_XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 		<knxAddress type=\"individual\">$KNX_ADDRESS</knxAddress>"
 if [ "$INTERFACE_TYPE" = "ft12-cemi" ]; then
 CONFIG_XML="$CONFIG_XML
-		<knxSubnet type=\"ft12-cemi\" medium=\"tp1\"$ADD_KNX_SOURCE_OVERRIDE>$DEVICE</knxSubnet>"
+		<knxSubnet type=\"ft12-cemi\" medium=\"tp1\"$ADD_KNX_SOURCE_OVERRIDE>$SERIAL_DEVICE</knxSubnet>"
 fi
 if [ "$INTERFACE_TYPE" = "tpuart" ]; then
 CONFIG_XML="$CONFIG_XML
-		<knxSubnet type=\"tpuart\" medium=\"tp1\">$DEVICE</knxSubnet>"
+		<knxSubnet type=\"tpuart\" medium=\"tp1\">$SERIAL_DEVICE</knxSubnet>"
+fi
+if [ "$INTERFACE_TYPE" = "usb" ]; then
+CONFIG_XML="$CONFIG_XML
+		<knxSubnet type=\"usb\" medium=\"tp1\">$USB_DEVICE</knxSubnet>"
 fi
 CONFIG_XML="$CONFIG_XML
 		<!-- KNX group address filter applied by the server for this service container (optional) -->
