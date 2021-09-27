@@ -19,8 +19,8 @@ RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
 # download jars and recompile serial and usb library for Alpine musl
 RUN mkdir -p /opt/calimero/
 RUN cd /opt/calimero/ \
-    && wget https://oss.sonatype.org/service/local/repositories/releases/content/org/slf4j/slf4j-api/1.8.0-beta4/slf4j-api-1.8.0-beta4.jar \
-    && wget https://oss.sonatype.org/service/local/repositories/releases/content/org/slf4j/slf4j-simple/1.8.0-beta4/slf4j-simple-1.8.0-beta4.jar
+    && wget https://repo1.maven.org/maven2/org/slf4j/slf4j-api/1.8.0-beta4/slf4j-api-1.8.0-beta4.jar \
+    && wget https://repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.8.0-beta4/slf4j-simple-1.8.0-beta4.jar
 RUN cd /opt/calimero/ \
     && wget https://github.com/NeuronRobotics/nrjavaserial/releases/download/5.2.1/nrjavaserial-5.2.1.jar \
     && wget https://github.com/NeuronRobotics/nrjavaserial/archive/refs/tags/5.2.1.zip -O nrjavaserial.zip \
@@ -37,8 +37,8 @@ RUN cd /opt/calimero/ \
     && zip -u nrjavaserial-5.2.1.jar native/linux/ARM_64/libNRJavaSerialv8.so \
     && rm -R native
 RUN cd /opt/calimero/ \
-    && wget https://oss.sonatype.org/service/local/repositories/releases/content/org/usb4java/usb4java-javax/1.3.0/usb4java-javax-1.3.0.jar \
-    && wget https://oss.sonatype.org/service/local/repositories/releases/content/org/usb4java/usb4java/1.3.0/usb4java-1.3.0.jar \
+    && wget https://repo1.maven.org/maven2/org/usb4java/usb4java-javax/1.3.0/usb4java-javax-1.3.0.jar \
+    && wget https://repo1.maven.org/maven2/org/usb4java/usb4java/1.3.0/usb4java-1.3.0.jar \
     && wget https://repo1.maven.org/maven2/javax/usb/usb-api/1.0.2/usb-api-1.0.2.jar \
     && wget https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar \
     && wget https://github.com/usb4java/libusb4java/archive/refs/tags/libusb4java-1.3.0.zip -O libusb4java.zip \
@@ -56,13 +56,10 @@ RUN cd /opt/calimero/ \
     && zip libusb4java-1.3.0-linux-aarch64.jar org/usb4java/linux-aarch64/libusb4java.so \
     && rm -R org
 RUN cd /opt/calimero/ \
-    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-rxtx/2.5-M1/calimero-rxtx-2.5-M1.jar \
-#    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-core/2.5-M1/calimero-core-2.5-M1.jar \
-#    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-device/2.5-M1/calimero-device-2.5-M1.jar \
-#    && wget https://oss.sonatype.org/service/local/repositories/releases/content/com/github/calimero/calimero-server/2.5-M1/calimero-server-2.5-M1.jar
-    && wget https://gist.github.com/bmalinowsky/3269cdab752fcff2d7c1e02c68f11084/raw/5388aa459398c4907c3edc7d0103ad2c0c49f7c8/calimero-device-2.5-M1.jar \
-    && wget -O calimero-core-2.5-M1.jar https://github.com/calimero-project/calimero-server/files/6594223/calimero-core-2.5-M1.zip \
-    && wget -O calimero-server-2.5-M1.jar https://github.com/calimero-project/calimero-server/files/6327972/calimero-server-2.5-M1.zip 
+    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-rxtx/2.5-rc1/calimero-rxtx-2.5-rc1.jar \
+    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-core/2.5-rc1/calimero-core-2.5-rc1.jar \
+    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-device/2.5-rc1/calimero-device-2.5-rc1.jar \
+    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-server/2.5-rc1/calimero-server-2.5-rc1.jar
     
 ARG BUILD_FROM
 FROM $BUILD_FROM
