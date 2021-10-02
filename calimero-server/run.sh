@@ -86,4 +86,4 @@ echo "$CONFIG_XML" > /etc/server-config.xml
 
 cat /etc/server-config.xml
 
-exec /opt/jdk/bin/java -cp "/opt/calimero/*"$ADD_LOGGING tuwien.auto.calimero.server.Launcher --no-stdin /etc/server-config.xml
+exec /opt/jdk/bin/java -cp "/opt/calimero/*"$ADD_LOGGING -Dgnu.io.rxtx.SerialPorts=$SERIAL_DEVICE tuwien.auto.calimero.server.Launcher --no-stdin /etc/server-config.xml
