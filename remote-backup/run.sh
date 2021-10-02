@@ -45,22 +45,22 @@ function copy-backup-to-remote {
 
 function delete-local-backup {
 
-    ${HA} snapshots reload
+    ${HA} backups reload
 
     if [[ ${KEEP_LOCAL_BACKUP} == "all" ]]; then
         :
     elif [[ -z ${KEEP_LOCAL_BACKUP} ]]; then
         echo "Deleting local backup: ${slug}"
-        ${HA} snapshots remove ${slug}
+        ${HA} backups remove ${slug}
     else
 
-        last_date_to_keep=$($HA --raw-json snapshots list | jq .data.snapshots[].date | sort -r | \
+        last_date_to_keep=$($HA --raw-json backups list | jq .data.snapshots[].date | sort -r | \
             head -n "${KEEP_LOCAL_BACKUP}" | tail -n 1 | xargs date -D "%Y-%m-%dT%T" +%s --date )
 
-        $HA --raw-json snapshots list | jq -c .data.snapshots[] | while read backup; do
+        $HA --raw-json backups list | jq -c .data.snapshots[] | while read backup; do
             if [[ $(echo ${backup} | jq .date | xargs date -D "%Y-%m-%dT%T" +%s --date ) -lt ${last_date_to_keep} ]]; then
                 echo "Deleting local backup: $(echo ${backup} | jq -r .slug)"
-                ${HA} snapshots remove $(echo ${backup} | jq -r .slug)
+                ${HA} backups remove $(echo ${backup} | jq -r .slug)
             fi
         done
 
@@ -71,10 +71,10 @@ function delete-local-backup {
 function create-local-backup {
     name="Automated backup $(date +'%Y-%m-%d %H:%M')"
     echo "Creating local backup: \"${name}\""
-	if [[ -z $PASSWORD  ]]; then
-      slug=$(${HA} snapshots new --name="${name}" | cut -d' ' -f2)
+	if [[ -z $PASSWORD ]]; then
+      slug=$(${HA} backups new --name="${name}" | cut -d' ' -f2)
 	else
-      slug=$(${HA} snapshots new --name="${name}" --password="${PASSWORD}" | cut -d' ' -f2)
+      slug=$(${HA} backups new --name="${name}" --password="${PASSWORD}" | cut -d' ' -f2)
 	fi
     echo "Backup created: ${slug}"
 }

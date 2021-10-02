@@ -11,7 +11,7 @@ RUN apk add --no-cache jq openssh-client zip
 ARG BUILD_ARCH
 ARG CLI_VERSION
 RUN apk add --no-cache curl \
-    && curl -Lso /usr/bin/ha https://github.com/home-assistant/cli/releases/download/4.3.0/ha_${BUILD_ARCH} \
+    && curl -Lso /usr/bin/ha https://github.com/home-assistant/cli/releases/download/4.14.0/ha_${BUILD_ARCH} \
     && chmod a+x /usr/bin/ha
 
 # Copy data
@@ -28,12 +28,12 @@ ARG BUILD_VERSION
 # Labels
 LABEL \
     io.hass.name="Remote Backup" \
-    io.hass.description="Automatically create Hass.io snapshots to remote server location using `SCP`." \
+    io.hass.description="Automatically create Hass.io backups to remote server location using `SCP`." \
     io.hass.arch="${BUILD_ARCH}" \
     io.hass.type="addon" \
     io.hass.version=${BUILD_VERSION} \
     maintainer="Nicolai Bjerre Pedersen <mr.bjerre@gmail.com> / TheStigh" \
-    org.label-schema.description="Automatically create Hass.io snapshots to remote server location using `SCP`." \
+    org.label-schema.description="Automatically create Hass.io backups to remote server location using `SCP`." \
     org.label-schema.build-date=${BUILD_DATE} \
     org.label-schema.name="Remote Backup" \
     org.label-schema.schema-version="1.0" \
