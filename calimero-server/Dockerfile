@@ -56,10 +56,10 @@ RUN cd /opt/calimero/ \
     && zip libusb4java-1.3.0-linux-aarch64.jar org/usb4java/linux-aarch64/libusb4java.so \
     && rm -R org
 RUN cd /opt/calimero/ \
-    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-rxtx/2.5-rc1/calimero-rxtx-2.5-rc1.jar \
-    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-core/2.5-rc1/calimero-core-2.5-rc1.jar \
-    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-device/2.5-rc1/calimero-device-2.5-rc1.jar \
-    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-server/2.5-rc1/calimero-server-2.5-rc1.jar
+    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-rxtx/2.5/calimero-rxtx-2.5.jar \
+    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-core/2.5/calimero-core-2.5.jar \
+    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-device/2.5/calimero-device-2.5.jar \
+    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-server/2.5/calimero-server-2.5.jar
     
 ARG BUILD_FROM
 FROM $BUILD_FROM
