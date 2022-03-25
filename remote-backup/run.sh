@@ -54,10 +54,10 @@ function delete-local-backup {
         ${HA} backups remove ${slug}
     else
 
-        last_date_to_keep=$($HA --raw-json backups list | jq .data.snapshots[].date | sort -r | \
+        last_date_to_keep=$($HA --raw-json backups list | jq .data.backups[].date | sort -r | \
             head -n "${KEEP_LOCAL_BACKUP}" | tail -n 1 | xargs date -D "%Y-%m-%dT%T" +%s --date )
 
-        $HA --raw-json backups list | jq -c .data.snapshots[] | while read backup; do
+        $HA --raw-json backups list | jq -c .data.backups[] | while read backup; do
             if [[ $(echo ${backup} | jq .date | xargs date -D "%Y-%m-%dT%T" +%s --date ) -lt ${last_date_to_keep} ]]; then
                 echo "Deleting local backup: $(echo ${backup} | jq -r .slug)"
                 ${HA} backups remove $(echo ${backup} | jq -r .slug)
