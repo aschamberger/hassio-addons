@@ -12,6 +12,9 @@ OIDs for my switch:
 * "1.3.6.1.6.3.1.1.5.4" = link up
 * "1.3.6.1.2.1.2.2.1.1.x" = port x
 
+Blueprint for deactivating the LAN port on link down: 
+https://gist.github.com/aschamberger/0ab0bd03561288cbb2ab079cad8f8a86
+
 ## Add-On Configuration
 
 The add-on requires the following configuration:
