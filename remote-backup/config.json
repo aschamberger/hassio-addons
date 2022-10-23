@@ -1,10 +1,9 @@
 {
   "name": "Remote Backup",
-  "version": "0.8",
+  "version": "0.4",
   "slug": "remote_backup",
-  "description": "Exploit hass cli backups and SCP to create remote backups to specified server",
+  "description": "Exploit snapshots and SCP to create remote backups to specified server",
   "url": "https://github.com/overkill32/hassio-remote-backup",
-  "init": false, 
   "startup": "once",
   "boot": "manual",
   "hassio_api": true,
