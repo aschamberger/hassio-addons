@@ -5,9 +5,9 @@ ENV LANG C.UTF-8
 
 # https://stackoverflow.com/a/57145029 --> explicitly add jmods
 RUN apk update \
-    && apk add --no-cache openjdk11-jdk openjdk11-jmods wget unzip zip build-base linux-headers lockdev cmake libusb-dev eudev-dev
+    && apk add --no-cache openjdk17-jdk openjdk17-jmods wget unzip zip build-base linux-headers lockdev cmake libusb-dev eudev-dev
 
-RUN /usr/lib/jvm/java-11-openjdk/bin/jlink \
+RUN /usr/lib/jvm/java-17-openjdk/bin/jlink \
     --verbose \
     --add-modules java.base,java.xml \
     --compress 2 \
@@ -28,9 +28,9 @@ RUN cd /opt/calimero/ \
     && cd nrjavaserial-5.2.1/src/main/c \
     && mkdir build \
     && mkdir -p /opt/calimero/native/linux/ARM_64/ \
-    && gcc -I./include -I./include/target -I/usr/lib/jvm/java-11-openjdk/include -I/usr/lib/jvm/java-11-openjdk/include/linux -O3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP src/fixup.c -o build/fixup.o \
-    && gcc -I./include -I./include/target -I/usr/lib/jvm/java-11-openjdk/include -I/usr/lib/jvm/java-11-openjdk/include/linux -O3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP src/fuserImp.c -o build/fuserImp.o \
-    && gcc -I./include -I./include/target -I/usr/lib/jvm/java-11-openjdk/include -I/usr/lib/jvm/java-11-openjdk/include/linux -O3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP src/SerialImp.c -o build/SerialImp.o \
+    && gcc -I./include -I./include/target -I/usr/lib/jvm/java-17-openjdk/include -I/usr/lib/jvm/java-17-openjdk/include/linux -O3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP src/fixup.c -o build/fixup.o \
+    && gcc -I./include -I./include/target -I/usr/lib/jvm/java-17-openjdk/include -I/usr/lib/jvm/java-17-openjdk/include/linux -O3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP src/fuserImp.c -o build/fuserImp.o \
+    && gcc -I./include -I./include/target -I/usr/lib/jvm/java-17-openjdk/include -I/usr/lib/jvm/java-17-openjdk/include/linux -O3 -Wall -c -fmessage-length=0 -fPIC -MMD -MP src/SerialImp.c -o build/SerialImp.o \
     && g++ -shared -fPIC -nostdlib -o"/opt/calimero/native/linux/ARM_64/libNRJavaSerialv8.so" build/fixup.o build/fuserImp.o build/SerialImp.o \
     && cd ../../../../ \
     && rm -R nrjavaserial-5.2.1 \
@@ -47,7 +47,7 @@ RUN cd /opt/calimero/ \
     && mkdir build \
     && mkdir -p /opt/calimero/org/usb4java/linux-aarch64/ \
     && cd build \
-    && export JAVA_HOME=/usr/lib/jvm/java-11-openjdk/ \
+    && export JAVA_HOME=/usr/lib/jvm/java-17-openjdk/ \
     && cmake .. \
     && make install/strip \
     && cp /usr/local/lib/libusb4java.so /opt/calimero/org/usb4java/linux-aarch64/ \

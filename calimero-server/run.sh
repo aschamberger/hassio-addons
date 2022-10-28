@@ -1,19 +1,15 @@
-#!/usr/bin/with-contenv bash
+#!/usr/bin/with-contenv bashio
 
-CONFIG_PATH=/data/options.json
-
-KNX_ADDRESS=$(jq --raw-output ".knx_address" $CONFIG_PATH)
-CLIENT_ADDRESS_START=$(jq --raw-output ".client_address_start" $CONFIG_PATH)
-CLIENT_ADDRESS_COUNT=$(jq --raw-output ".client_address_count" $CONFIG_PATH)
-INTERFACE_TYPE=$(jq --raw-output ".interface_type" $CONFIG_PATH)
-SERIAL_DEVICE=$(jq --raw-output ".serial_device" $CONFIG_PATH)
-USB_DEVICE=$(jq --raw-output ".usb_device" $CONFIG_PATH)
-ROUTING=$(jq --raw-output ".routing" $CONFIG_PATH)
-KNX_SOURCE_OVERRIDE=$(jq --raw-output ".knx_source_override" $CONFIG_PATH)
-LOGLEVEL=$(jq --raw-output ".loglevel" $CONFIG_PATH)
+KNX_ADDRESS=$(bashio::config 'knx_address')
+CLIENT_ADDRESS_START=$(bashio::config 'client_address_start')
+CLIENT_ADDRESS_COUNT=$(bashio::config 'client_address_count')
+INTERFACE_TYPE=$(bashio::config 'interface_type')
+SERIAL_DEVICE=$(bashio::config 'serial_device')
+USB_DEVICE=$(bashio::config 'usb_device')
+ROUTING=$(bashio::config 'routing')
 
 # try to handle missing serial device config
-if [ -z "$SERIAL_DEVICE" ]; then
+if bashio::config.is_empty 'serial_device'; then
     echo "serial device config missing!\n"
     # Raspberry Pi 3 / 4
     if [ -e "/dev/ttyAMA0" ]; then
@@ -29,13 +25,14 @@ if [ -z "$SERIAL_DEVICE" ]; then
 fi
 
 ADD_KNX_SOURCE_OVERRIDE=""
-if [ -n "$KNX_SOURCE_OVERRIDE" ]; then
+if bashio::config.true 'knx_source_override'; then
     ADD_KNX_SOURCE_OVERRIDE=" knxAddress=\"0\""
 fi
 
-ADD_LOGGING=""
-if [ -n "$LOGLEVEL" ]; then
-    ADD_LOGGING=" -Dorg.slf4j.simpleLogger.defaultLogLevel=$LOGLEVEL"
+ADD_TIMESERVER_EXPIRATION=""
+if bashio::config.exists 'timeserver_expiration'; then
+    ADD_TIMESERVER_EXPIRATION="
+				<expiration timeout=\"$(bashio::config 'timeserver_expiration')\" />"
 fi
 
 CONFIG_XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
@@ -44,7 +41,7 @@ CONFIG_XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 	<!-- KNXnet/IP search & discovery -->
 	<discovery listenNetIf=\"all\" outgoingNetIf=\"all\" activate=\"true\" />
 	<!-- Provides the KNXnet/IP-side configuration for access to one KNX subnet -->
-	<serviceContainer activate=\"true\" routing=\"$ROUTING\" networkMonitoring=\"true\" 
+	<serviceContainer activate=\"true\" routing=\"$ROUTING\" networkMonitoring=\"true\"
 		udpPort=\"3671\" listenNetIf=\"eth0\">
 		<knxAddress type=\"individual\">$KNX_ADDRESS</knxAddress>"
 if [ "$INTERFACE_TYPE" = "ft12-cemi" ]; then
@@ -76,7 +73,32 @@ CONFIG_XML="$CONFIG_XML
 i=$(( i + 1 ))
 done
 CONFIG_XML="$CONFIG_XML
-		</additionalAddresses>
+		</additionalAddresses>"
+if bashio::config.exists 'expose_date' || bashio::config.exists 'expose_time' || bashio::config.exists 'expose_datetime'; then
+    CONFIG_XML="$CONFIG_XML
+		<timeServer>"
+    if bashio::config.exists 'expose_date'; then
+    CONFIG_XML="$CONFIG_XML
+			<datapoint stateBased=\"true\" name=\"current date\" dptID=\"11.001\" priority=\"low\">
+				<knxAddress type=\"group\">$(bashio::config 'expose_date')</knxAddress>$ADD_TIMESERVER_EXPIRATION
+			</datapoint>"
+    fi
+    if bashio::config.exists 'expose_time'; then
+    CONFIG_XML="$CONFIG_XML
+			<datapoint stateBased=\"true\" name=\"current time\" dptID=\"10.001\" priority=\"low\">
+				<knxAddress type=\"group\">$(bashio::config 'expose_time')</knxAddress>$ADD_TIMESERVER_EXPIRATION
+			</datapoint>"
+    fi
+    if bashio::config.exists 'expose_datetime'; then
+    CONFIG_XML="$CONFIG_XML
+			<datapoint stateBased=\"true\" name=\"current datetime\" dptID=\"19.001\" priority=\"low\">
+				<knxAddress type=\"group\">$(bashio::config 'expose_datetime')</knxAddress>$ADD_TIMESERVER_EXPIRATION
+			</datapoint>"
+    fi
+    CONFIG_XML="$CONFIG_XML
+		</timeServer>"
+fi
+CONFIG_XML="$CONFIG_XML
 	</serviceContainer>
 	<!-- Add next service container (optional) -->
 </knxServer>"
@@ -85,4 +107,9 @@ echo "$CONFIG_XML" > /etc/server-config.xml
 
 cat /etc/server-config.xml
 
-exec /opt/jdk/bin/java -cp "/opt/calimero/*"$ADD_LOGGING -Dgnu.io.rxtx.SerialPorts=$SERIAL_DEVICE tuwien.auto.calimero.server.Launcher --no-stdin /etc/server-config.xml
+ADD_LOGGING=""
+if ! bashio::config.is_empty 'loglevel' && ! bashio::config.equals 'loglevel' 'off'; then
+    ADD_LOGGING=" -Dorg.slf4j.simpleLogger.defaultLogLevel=$(bashio::config 'loglevel')"
+fi
+
+exec /opt/jdk/bin/java -XX:+UseShenandoahGC -cp "/opt/calimero/*"$ADD_LOGGING -Dgnu.io.rxtx.SerialPorts=$SERIAL_DEVICE tuwien.auto.calimero.server.Launcher --no-stdin /etc/server-config.xml

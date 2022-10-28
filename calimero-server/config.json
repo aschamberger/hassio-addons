@@ -1,6 +1,6 @@
 {
   "name": "Calimero KNXnet/IP Server",
-  "version": "0.9.9",
+  "version": "0.10",
   "slug": "calimero_server",
   "description": "A KNXnet/IP server for running your own KNXnet/IP server in software accessing the KNX bus by FT1.2, TPUART or USB bus adapters",
   "arch": ["aarch64"],
@@ -29,6 +29,10 @@
 	"usb_device": "str?",
 	"routing": "bool",
     "knx_source_override": "bool?",
-    "loglevel": "list(trace|debug|info|warn|error|off)?"
+    "loglevel": "list(trace|debug|info|warn|error|off)?",
+    "expose_date": "str?",
+    "expose_time": "str?",
+    "expose_datetime": "str?",
+    "timeserver_expiration": "int?"
   }
 }

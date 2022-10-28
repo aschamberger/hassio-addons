@@ -38,6 +38,14 @@ knx_source_override: true
 
 `loglevel` is optional and can be one of the slf4j log levels. It logs everything to standard output. 
 
+`expose_date` Cyclically transmit date (11.001) to this group address using the default time zone
+
+`expose_time` Cyclically transmit time (10.001) to this group address using the default time zone
+
+`expose_datetime` Cyclically transmit date+time (19.001) to this group address using the default time zone
+
+`timeserver_expiration` Expiration timeout specifies tx cycle in seconds, e.g., 1 min = 60, 1 hour = 3600, 12 hours = 43200 
+
 ## Configure serial communication 
 
 ### Raspberry Pi 3 / 4
