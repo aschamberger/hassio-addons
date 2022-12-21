@@ -66,10 +66,6 @@ dtoverlay=uart0
 uart0=on
 ```
 
-### Asus Tinker Board S
-
-The correct device for the serial port is '/dev/ttyAMA0' (the device is pin compatible to the Raspberry Pi)
-
 ### ODROID C4
 
 The correct device for the serial port is '/dev/ttyAML1' (the device is pin compatible to the Raspberry Pi)
