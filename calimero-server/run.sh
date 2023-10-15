@@ -42,7 +42,7 @@ CONFIG_XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 	<discovery listenNetIf=\"all\" outgoingNetIf=\"all\" activate=\"true\" />
 	<!-- Provides the KNXnet/IP-side configuration for access to one KNX subnet -->
 	<serviceContainer activate=\"true\" routing=\"$ROUTING\" networkMonitoring=\"true\"
-		udpPort=\"3671\" listenNetIf=\"eth0\">
+		udpPort=\"3671\" listenNetIf=\"end0\">
 		<knxAddress type=\"individual\">$KNX_ADDRESS</knxAddress>"
 if [ "$INTERFACE_TYPE" = "ft12-cemi" ]; then
 CONFIG_XML="$CONFIG_XML
