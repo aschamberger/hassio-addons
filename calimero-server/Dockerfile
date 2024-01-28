@@ -55,11 +55,12 @@ RUN cd /opt/calimero/ \
     && rm -R libusb4java-libusb4java-1.3.0 \
     && zip libusb4java-1.3.0-linux-aarch64.jar org/usb4java/linux-aarch64/libusb4java.so \
     && rm -R org
+# https://s01.oss.sonatype.org/#nexus-search;quick~io.calimero
 RUN cd /opt/calimero/ \
-    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-rxtx/2.5.1/calimero-rxtx-2.5.1.jar \
-    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-core/2.5.1/calimero-core-2.5.1.jar \
-    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-device/2.5.1/calimero-device-2.5.1.jar \
-    && wget https://repo1.maven.org/maven2/com/github/calimero/calimero-server/2.5.1/calimero-server-2.5.1.jar
+    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-rxtx/3.0-SNAPSHOT/calimero-rxtx-3.0-20231205.171357-3.jar \
+    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-core/3.0-SNAPSHOT/calimero-core-3.0-20231205.164120-4.jar \
+    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-device/3.0-SNAPSHOT/calimero-device-3.0-20231205.164238-3.jar \
+    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-server/3.0-SNAPSHOT/calimero-server-3.0-20231205.164316-3.jar
     
 ARG BUILD_FROM
 FROM $BUILD_FROM

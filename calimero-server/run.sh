@@ -46,7 +46,7 @@ CONFIG_XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 		<knxAddress type=\"individual\">$KNX_ADDRESS</knxAddress>"
 if [ "$INTERFACE_TYPE" = "ft12-cemi" ]; then
 CONFIG_XML="$CONFIG_XML
-		<knxSubnet type=\"ft12-cemi\" medium=\"tp1\"$ADD_KNX_SOURCE_OVERRIDE>$SERIAL_DEVICE</knxSubnet>"
+		<knxSubnet type=\"ft12\" medium=\"tp1\" format=\"cemi\"$ADD_KNX_SOURCE_OVERRIDE>$SERIAL_DEVICE</knxSubnet>"
 fi
 if [ "$INTERFACE_TYPE" = "tpuart" ]; then
 CONFIG_XML="$CONFIG_XML
@@ -112,4 +112,4 @@ if ! bashio::config.is_empty 'loglevel' && ! bashio::config.equals 'loglevel' 'o
     ADD_LOGGING=" -Dorg.slf4j.simpleLogger.defaultLogLevel=$(bashio::config 'loglevel')"
 fi
 
-exec /opt/jdk/bin/java -XX:+UseShenandoahGC -cp "/opt/calimero/*"$ADD_LOGGING -Dgnu.io.rxtx.SerialPorts=$SERIAL_DEVICE tuwien.auto.calimero.server.Launcher --no-stdin /etc/server-config.xml
+exec /opt/jdk/bin/java -XX:+UseShenandoahGC -cp "/opt/calimero/*"$ADD_LOGGING -Dgnu.io.rxtx.SerialPorts=$SERIAL_DEVICE io.calimero.server.Launcher --no-stdin /etc/server-config.xml
