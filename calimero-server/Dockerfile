@@ -57,10 +57,10 @@ RUN cd /opt/calimero/ \
     && rm -R org
 # https://s01.oss.sonatype.org/#nexus-search;quick~io.calimero
 RUN cd /opt/calimero/ \
-    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-rxtx/3.0-SNAPSHOT/calimero-rxtx-3.0-20231205.171357-3.jar \
-    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-core/3.0-SNAPSHOT/calimero-core-3.0-20231205.164120-4.jar \
-    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-device/3.0-SNAPSHOT/calimero-device-3.0-20231205.164238-3.jar \
-    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-server/3.0-SNAPSHOT/calimero-server-3.0-20231205.164316-3.jar
+    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-rxtx/3.0-SNAPSHOT/calimero-rxtx-3.0-20240209.103824-5.jar \
+    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-core/3.0-SNAPSHOT/calimero-core-3.0-20240209.103824-6.jar \
+    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-device/3.0-SNAPSHOT/calimero-device-3.0-20240209.103824-5.jar \
+    && wget https://s01.oss.sonatype.org/service/local/repositories/snapshots/content/io/calimero/calimero-server/3.0-SNAPSHOT/calimero-server-3.0-20240209.103824-5.jar
     
 ARG BUILD_FROM
 FROM $BUILD_FROM
