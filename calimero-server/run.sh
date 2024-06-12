@@ -1,5 +1,6 @@
 #!/usr/bin/with-contenv bashio
 
+DISCOVERY_NAME=$(bashio::config 'discovery_name')
 KNX_ADDRESS=$(bashio::config 'knx_address')
 CLIENT_ADDRESS_START=$(bashio::config 'client_address_start')
 CLIENT_ADDRESS_COUNT=$(bashio::config 'client_address_count')
@@ -37,7 +38,7 @@ fi
 
 CONFIG_XML="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 <!-- Calimero server settings (required for startup) -->
-<knxServer name=\"knx-server\" friendlyName=\"Hass OS KNXnet/IP Server\">
+<knxServer name=\"knx-server\" friendlyName=\"$DISCOVERY_NAME\">
 	<!-- KNXnet/IP search & discovery -->
 	<discovery listenNetIf=\"all\" outgoingNetIf=\"all\" activate=\"true\" />
 	<!-- Provides the KNXnet/IP-side configuration for access to one KNX subnet -->
