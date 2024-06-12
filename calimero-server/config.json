@@ -12,7 +12,7 @@
   "uart": true,
   "usb": true,
   "options": {
-    "discovey_name": "Hass OS KNXnet/IP Server",
+    "discovery_name": "Hass OS KNXnet/IP Server",
     "knx_address": "1.1.0",
     "client_address_start": "1.1.101",
     "client_address_count": 5,
@@ -22,7 +22,7 @@
     "knx_source_override": true
   },
   "schema": {
-    "discovey_name": "str",
+    "discovery_name": "str",
     "knx_address": "str",
     "client_address_start": "str",
     "client_address_count": "int",
