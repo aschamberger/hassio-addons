@@ -6,7 +6,7 @@ ENV LANG C.UTF-8
 RUN apk update \
     && apk add --no-cache python3 py3-pip
     
-RUN pip install -f https://wheels.home-assistant.io/musllinux/ pysnmplib
+RUN pip install pysnmp
 
 COPY trap.py /
 RUN chmod a+x /trap.py

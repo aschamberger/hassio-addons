@@ -1,64 +1,72 @@
 #!/usr/bin/python
 
-# based on https://pysnmp.readthedocs.io/en/latest/examples/v3arch/asyncio/manager/ntfrcv/transport-tweaks.html
-# install https://www.piwheels.org/ to run on a dietpi/pi os 
+# based on 
+# * https://github.com/lextudio/pysnmp/blob/main/examples/v3arch/asyncio/manager/ntfrcv/multiple-network-transports-incl-ipv4-and-ipv6.py
+# * https://github.com/lextudio/pysnmp/blob/main/examples/v3arch/asyncio/manager/ntfrcv/determine-peer-network-address.py#L53
 
 import os
-import asyncio
 import requests
 import json
+
 from pysnmp.entity import engine, config
-from pysnmp.carrier.asyncio.dgram import udp
+from pysnmp.carrier.asyncio.dgram import udp, udp6
 from pysnmp.entity.rfc3413 import ntfrcv
 
 # get config from ENV vars
-hassHost = "http://supervisor/core/api"
-hassBearer = os.getenv('SUPERVISOR_TOKEN')       
+hass_host = "http://supervisor/core/api"
+hass_bearer = os.getenv('SUPERVISOR_TOKEN')       
 port = os.getenv('PORT')
-communityString = os.getenv('COMMUNITY_STRING')
+community_string = os.getenv('COMMUNITY_STRING')
 
 # parameters for calling hass
-url = hassHost + "/events/snmp_trap"
+url = hass_host + "/events/snmp_trap"
 headers = {
-    "Authorization": "Bearer " + hassBearer,
+    "Authorization": "Bearer " + hass_bearer,
     "content-type": "application/json"
 }
-
-# Get the event loop for this thread
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
 
 # Create SNMP engine with autogenernated engineID and pre-bound
 # to socket transport dispatcher
 snmpEngine = engine.SnmpEngine()
 
-# Transport setup: UDP over IPv4
-config.addTransport(
-    snmpEngine,
-    udp.domainName + (1,),
-    udp.UdpTransport().openServerMode(('0.0.0.0', port))
+# Transport setup
+
+# UDP over IPv4
+config.add_transport(
+    snmpEngine, udp.DOMAIN_NAME, udp.UdpTransport().open_server_mode(("127.0.0.1", port))
+)
+
+# UDP over IPv6
+config.add_transport(
+    snmpEngine, udp6.DOMAIN_NAME, udp6.Udp6Transport().open_server_mode(("::1", port))
 )
 
 # SNMPv1/2c setup
 
 # SecurityName <-> CommunityName mapping
-config.addV1System(snmpEngine, 'my-area', communityString)
+config.add_v1_system(snmpEngine, "my-area", community_string)
 
 # Callback function for receiving notifications
-# noinspection PyUnusedLocal
-def cbFun(snmpEngine, stateReference, contextEngineId,
-          contextName, varBinds, cbCtx):
+# noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal
+def cbFun(snmpEngine, stateReference, contextEngineId, contextName, varBinds, cbCtx):
+    # Get an execution context...
+    execContext = snmpEngine.observer.getExecutionContext(
+        "rfc3412.receiveMessage:request"
+    )
+    
+    # ... and use inner SNMP engine data to figure out peer address
+    print(
+        'Notification from {}, ContextEngineId "{}", ContextName "{}"'.format(
+            "@".join([str(x) for x in execContext["transportAddress"]]),
+            contextEngineId.prettyPrint(),
+            contextName.prettyPrint(),
+        )
+    )
 
-    transportDomain, transportAddress = snmpEngine.msgAndPduDsp.getTransportInfo(stateReference)
-
-    #print('Notification from %s, SNMP Engine %s, '
-    #      'Context %s' % (transportAddress, contextEngineId.prettyPrint(),
-    #                      contextName.prettyPrint()))
-
-    data = {'_source': transportAddress[0]}
+    data = {'_source': execContext["transportAddress"]}
 
     for name, val in varBinds:
-        #print('%s = %s' % (name.prettyPrint(), val.prettyPrint()))
+        #print(f"{name.prettyPrint()} = {val.prettyPrint()}")
         name = name.prettyPrint()
         if (name == '1.3.6.1.2.1.1.3.0'):
             name = '_uptime'
@@ -73,5 +81,11 @@ def cbFun(snmpEngine, stateReference, contextEngineId,
 # Register SNMP Application at the SNMP engine
 ntfrcv.NotificationReceiver(snmpEngine, cbFun)
 
-# Run asyncio main loop
-loop.run_forever()
+snmpEngine.transport_dispatcher.job_started(1)  # this job would never finish
+
+# Run I/O dispatcher which would receive queries and send confirmations
+try:
+    snmpEngine.open_dispatcher()
+except:
+    snmpEngine.close_dispatcher()
+    raise
